@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/fixtures",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Namespaced fixture resources, setup/cleanup handles, compensation and quarantine."
+}

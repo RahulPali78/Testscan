@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Versioned validated schemas for scenarios, target bindings, manifests, events and results."
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/worker-desktop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Windows/macOS/Linux host bridges, Electron execution and isolated interactive sessions."
+}

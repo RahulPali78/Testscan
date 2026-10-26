@@ -1,0 +1,1651 @@
+{
+  "title": "Veriqo — complete-product implementation plan",
+  "version": "2.0",
+  "created": "2026-10-25",
+  "scope": "Production end-to-end testing across web, APIs, AI agents, Android/iOS, desktop and voice; cross-application workflows and private runners required.",
+  "status": "Proposed implementation; all engineering tasks planned, none verified complete",
+  "assumptions": {
+    "engineers": 3,
+    "product_qa_hours_per_week": "15–20",
+    "region": "AWS eu-west-1",
+    "planned_capacity_fraction": 0.7,
+    "reserve_capacity_fraction": 0.3,
+    "engineering_days_range": {
+      "min": 348,
+      "max": 581
+    },
+    "calendar_deadline": null,
+    "estimation_note": "Preliminary effort ranges, not committed elapsed durations. Re-estimate after native/device/voice feasibility work; account for role bottlenecks."
+  },
+  "roles": {
+    "P": "Product & integrations",
+    "X": "Execution & reliability",
+    "E": "Evaluation & adapters"
+  },
+  "milestones": [
+    {
+      "n": 1,
+      "title": "Shared platform",
+      "goal": "Identity, versioned contracts, durable execution and the authenticated console.",
+      "gate": "A scoped user runs a real synthetic action and independent checks distinguish correct, duplicate, missing and wrong-tenant outcomes.",
+      "qa": "Approve business expectations and matrix; maintain separate development and assessment fixtures."
+    },
+    {
+      "n": 2,
+      "title": "Integration and private execution",
+      "goal": "Connections, adapters, fixtures, protected evidence and enrolled private runners.",
+      "gate": "A conformance-tested adapter executes through cloud and private runners with bounded permissions, safe retries and visible cleanup.",
+      "qa": "Approve credential/network scope and observer coverage; review runner enrollment and recovery evidence."
+    },
+    {
+      "n": 3,
+      "title": "Web and API execution",
+      "goal": "Chromium, Firefox, WebKit, REST, GraphQL, WebSocket and multi-target workflows.",
+      "gate": "Browser-initiated and endpoint-initiated workflows detect backend defects across the qualified browser/API matrix.",
+      "qa": "Review independent web/API outcomes and legitimate asynchronous behavior."
+    },
+    {
+      "n": 4,
+      "title": "AI-agent execution",
+      "goal": "HTTP, initial SDK bridge, MCP, telemetry, multi-turn sessions and multi-agent handoffs.",
+      "gate": "Agent responses, internal events and actual business effects remain separately assessed under bounded execution.",
+      "qa": "Label context, authorization, recovery and handoff cases; approve capability disclosures."
+    },
+    {
+      "n": 5,
+      "title": "Android and iOS execution",
+      "goal": "Appium adapters, simulator/emulator and real-device integration, fixtures and mobile evidence.",
+      "gate": "A mobile-to-agent-to-API-to-web journey passes and seeded faults fail on the committed Android/iOS matrix.",
+      "qa": "Supply signed synthetic apps/device access and validate host, privacy and cost constraints."
+    },
+    {
+      "n": 6,
+      "title": "Desktop execution",
+      "goal": "Windows, macOS, Linux and Electron adapters with isolated profiles and OS-specific bridges.",
+      "gate": "Desktop-initiated workflows have reproducible evidence and verified outcomes on every committed OS/technology cell.",
+      "qa": "Approve accessible test interfaces and OS permissions; measure native-bridge support requirements."
+    },
+    {
+      "n": 7,
+      "title": "Voice execution",
+      "goal": "WebRTC audio, transcripts, interruptions, business outcomes, escalation and privacy controls.",
+      "gate": "Voice-triggered actions and agent handoffs are independently verified with audio uncertainty and timing limits disclosed.",
+      "qa": "Approve synthetic/consented fixtures, languages, timing expectations and speech-provider data routes."
+    },
+    {
+      "n": 8,
+      "title": "Complete customer product",
+      "goal": "Authoring, datasets, schedules, comparisons, advisory assistance, CI/CD, billing and self-service onboarding.",
+      "gate": "An independent user connects, configures, runs, investigates, fixes and reruns with documented commercial and release controls.",
+      "qa": "Approve templates, commercial allowances and operator usability; no founder operation is assumed."
+    },
+    {
+      "n": 9,
+      "title": "Production qualification and launch",
+      "goal": "Independent assessments, cross-application qualification, capacity, security, recovery and documentation.",
+      "gate": "All six application classes and committed cross-application journeys meet the general-availability gates.",
+      "qa": "Sign the evidence-backed release decision; customer count and revenue are not engineering acceptance criteria."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "E2E-101",
+      "milestone": 1,
+      "title": "Approve product outcomes and the compatibility matrix",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 3,
+        "max": 5
+      },
+      "dependencies": [],
+      "deliverable": "Versioned business requirements and supported-platform matrix for all six application classes.",
+      "acceptance_criteria": [
+        "Define positive, forbidden and uncertain outcomes for web, API, agent, mobile, desktop and voice journeys.",
+        "Record required OS/browser/device versions, integration prerequisites and evidence limits; all cells start Planned.",
+        "QA/domain owner approves expectations independently of generated implementation behavior."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-102",
+      "milestone": 1,
+      "title": "Bootstrap the workspace, CI and AWS EU environments",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 3,
+        "max": 5
+      },
+      "dependencies": [],
+      "deliverable": "Pinned TypeScript workspace, local dependencies, infrastructure as code and separated AWS Ireland environments.",
+      "acceptance_criteria": [
+        "Fresh checkout starts PostgreSQL, local Temporal and synthetic target fixtures.",
+        "CI checks types, formatting, relevant tests, schema compatibility and migration smoke execution.",
+        "Pin Node, package manager, images and browsers; keep secrets outside source and separate development, staging and production."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-103",
+      "milestone": 1,
+      "title": "Publish multi-target scenario, adapter and event contracts",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 6
+      },
+      "dependencies": [
+        "E2E-101"
+      ],
+      "deliverable": "Versioned schemas for scenarios, bindings, capabilities, events, findings and result manifests.",
+      "acceptance_criteria": [
+        "Steps reference target aliases and typed outputs without embedding credentials or arbitrary code.",
+        "Include deadlines, operation/attempt IDs, execution identity and explicit unavailable evidence.",
+        "Separate execution status, correctness verdict, evidence completeness and cleanup status; validate examples for every application class."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-104",
+      "milestone": 1,
+      "title": "Implement organisations, identity and scoped permissions",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-102",
+        "E2E-103"
+      ],
+      "deliverable": "Cognito OIDC integration, memberships, owner/editor/viewer roles and revocable project service tokens.",
+      "acceptance_criteria": [
+        "Authenticated membership establishes tenant scope on every read, write, export and download.",
+        "Only authorized roles publish criteria, manage connections or change release policy.",
+        "Test guessed identifiers, revoked users/tokens and cross-project access using non-owner database roles."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-105",
+      "milestone": 1,
+      "title": "Build immutable persistence and transactional run admission",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-103",
+        "E2E-104"
+      ],
+      "deliverable": "SQL migrations, versioned records, frozen multi-target manifests and a transactional outbox.",
+      "acceptance_criteria": [
+        "Composite tenant references reject cross-organisation relationships.",
+        "Run creation and dispatch command commit atomically; scoped idempotency key plus changed payload returns conflict.",
+        "Published scenario, dataset, target, evaluator and policy versions remain unchanged after edits."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-106",
+      "milestone": 1,
+      "title": "Implement durable workflow stages and result fencing",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-102",
+        "E2E-103",
+        "E2E-105"
+      ],
+      "deliverable": "Temporal dispatcher, stage machine, task assignment, cancellation and stale-completion rejection.",
+      "acceptance_criteria": [
+        "Repeated outbox delivery starts one logical run; workflow code performs no nondeterministic network work.",
+        "Fence assignments by attempt and lease; preserve late evidence without accepting stale terminal completion.",
+        "Worker death or ambiguous external write yields reconciliation or inconclusive execution, never automatic replay of unsafe writes."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-107",
+      "milestone": 1,
+      "title": "Enforce budgets, concurrency and usage accounting",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 6
+      },
+      "dependencies": [
+        "E2E-105",
+        "E2E-106"
+      ],
+      "deliverable": "Atomic reservations, per-organisation limits, deadlines, payload caps and append-only usage events.",
+      "acceptance_criteria": [
+        "Concurrent run starts cannot exceed reserved budgets or configured tenant concurrency.",
+        "Enforce controllable duration, turn and call limits outside model instructions; label opaque agent costs unavailable.",
+        "Account for all attempts, in-flight work and reconciled versus estimated consumption; reject excess work explicitly."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-108",
+      "milestone": 1,
+      "title": "Deliver the authenticated project and run console",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 6
+      },
+      "dependencies": [
+        "E2E-104",
+        "E2E-105",
+        "E2E-106"
+      ],
+      "deliverable": "Project management, run submission, polling, cancellation and a real evidence-backed run detail.",
+      "acceptance_criteria": [
+        "A user creates and inspects a run without direct database access.",
+        "Display execution, verdict, coverage, platform identity and cleanup independently.",
+        "Polling stops on terminal execution; unauthorized users cannot inspect results or artifact references."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-201",
+      "milestone": 2,
+      "title": "Implement versioned connections and secret resolution",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-104",
+        "E2E-105",
+        "E2E-103"
+      ],
+      "deliverable": "Connection registration, health diagnosis, target versions, secret rotation and deployment identity.",
+      "acceptance_criteria": [
+        "Distinguish invalid credentials, blocked networking, unsupported capabilities and unavailable identity.",
+        "Store secret references; resolve authorized secret versions at execution and record version identity without values.",
+        "Validate deployment/build identities per bound target; redact credentials before evidence leaves its trusted boundary."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-202",
+      "milestone": 2,
+      "title": "Build the adapter registry and compatibility negotiation",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-103",
+        "E2E-201"
+      ],
+      "deliverable": "Shared capability registry and prepare/invoke/observe/cancel/cleanup lifecycle.",
+      "acceptance_criteria": [
+        "Pin adapter version and platform requirements in each run manifest.",
+        "Reject missing mandatory capabilities before publication/admission; label excluded optional checks NOT_TESTED.",
+        "Conformance suite rejects invented telemetry, invalid outputs, expired sessions and over-limit payloads."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-203",
+      "milestone": 2,
+      "title": "Implement fixtures, compensation and cleanup reconciliation",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-106",
+        "E2E-202"
+      ],
+      "deliverable": "Per-run resource namespaces, fixture ledger, cleanup workers and target quarantine.",
+      "acceptance_criteria": [
+        "Repeated setup tracks one logical fixture; cleanup only touches resources owned by its namespace.",
+        "Record late writes and in-flight actions before declaring cleanup complete.",
+        "Retry failed cleanup visibly; prevent unsafe reuse of contaminated accounts, devices or targets."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-204",
+      "milestone": 2,
+      "title": "Enforce execution isolation and destination policy",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 9
+      },
+      "dependencies": [
+        "E2E-201",
+        "E2E-202"
+      ],
+      "deliverable": "Scoped execution assignments, Fargate task isolation and validated egress proxy policy.",
+      "acceptance_criteria": [
+        "Block unapproved hosts, private/metadata destinations, unsafe DNS changes and redirect bypasses.",
+        "Browser subresources, WebSockets and child traffic cannot bypass destination rules.",
+        "Keep observer credentials separate from browser/device execution and prevent access to broad platform credentials."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-205",
+      "milestone": 2,
+      "title": "Deliver customer-managed private runners",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 7,
+        "max": 12
+      },
+      "dependencies": [
+        "E2E-106",
+        "E2E-204"
+      ],
+      "deliverable": "Outbound authenticated job retrieval, enrolled runner identities, upgrades and scoped result export.",
+      "acceptance_criteria": [
+        "Assignments bind tenant, project, manifest, capabilities, lease and expiration; runner revocation stops new work.",
+        "Cloud control service gains no arbitrary inbound access to customer networks.",
+        "Handle disconnection, duplicate delivery and old runner versions without duplicate unsafe actions or false passes."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-206",
+      "milestone": 2,
+      "title": "Implement protected evidence storage and event ingestion",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-105",
+        "E2E-201"
+      ],
+      "deliverable": "Append-only correlated events, S3 artifacts, sensitivity metadata and authorized short-lived access.",
+      "acceptance_criteria": [
+        "Deduplicate events by producer/attempt/sequence; retain source and ingestion times without claiming a global clock order.",
+        "Validate uploads, content type, checksum and size against the scoped assignment.",
+        "Keep raw secrets out of logs; protect screenshots/audio/traces as potentially sensitive content with access and retention controls."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-207",
+      "milestone": 2,
+      "title": "Build authoritative observers and deterministic assertions",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-202",
+        "E2E-203",
+        "E2E-206"
+      ],
+      "deliverable": "Approved state readers and independent count, ownership, permission, field and transition checks.",
+      "acceptance_criteria": [
+        "A convincing agent reply or successful HTTP code cannot override incorrect authoritative state.",
+        "Observe through a declared window; detect delayed duplicates and distinguish incomplete reads from witnessed failures.",
+        "Observer coverage includes relevant synthetic tenants; disclose when wrong-tenant writes cannot be located."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-208",
+      "milestone": 2,
+      "title": "Publish the adapter and runner conformance harness",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-203",
+        "E2E-204",
+        "E2E-205",
+        "E2E-207"
+      ],
+      "deliverable": "Reusable contract, fault and isolation suite required for every adapter family.",
+      "acceptance_criteria": [
+        "Exercise retry before/after side effects, cancellation, credential expiry and cleanup failure.",
+        "Validate platform identity, version compatibility and capability-based admission.",
+        "Store reproducible conformance evidence with every adapter release; failed required tests block support status changes."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-301",
+      "milestone": 3,
+      "title": "Implement REST and stateful API workflows",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 6
+      },
+      "dependencies": [
+        "E2E-202",
+        "E2E-207"
+      ],
+      "deliverable": "REST request, schema, authentication, pagination and business-state checks.",
+      "acceptance_criteria": [
+        "Use approved request templates and bounded responses; redact sensitive headers and fields.",
+        "Exercise permission denial, state transitions and timeout-after-success behavior.",
+        "Preserve expected/observed values and authoritative evidence even when the transport response is misleading."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-302",
+      "milestone": 3,
+      "title": "Implement GraphQL operations and API contracts",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 6
+      },
+      "dependencies": [
+        "E2E-301"
+      ],
+      "deliverable": "GraphQL query/mutation execution and versioned API contract checks.",
+      "acceptance_criteria": [
+        "Handle partial data plus errors without converting required unknown fields into passes.",
+        "Pin operation/schema identity and enforce variable, depth and response limits.",
+        "Correlate mutations to authoritative business state with repeat-safe fixture cleanup."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-303",
+      "milestone": 3,
+      "title": "Build isolated browser execution and artifact capture",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-203",
+        "E2E-204",
+        "E2E-206"
+      ],
+      "deliverable": "Playwright executor with per-run processes/contexts, authentication setup and bounded traces.",
+      "acceptance_criteria": [
+        "Create fresh sessions per run; no shared customer cookies, downloads or local storage.",
+        "Enforce CPU, memory, execution deadline and child-process/network restrictions.",
+        "Use stable explicit assertions; failed launches and missing artifacts produce operational errors and unknown required checks."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-304",
+      "milestone": 3,
+      "title": "Deliver Chromium browser-initiated journeys",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 3,
+        "max": 5
+      },
+      "dependencies": [
+        "E2E-303",
+        "E2E-301",
+        "E2E-207"
+      ],
+      "deliverable": "Login, submit request, verify API state and confirm final UI in one protected scenario.",
+      "acceptance_criteria": [
+        "Workflow can begin in the browser or through an agent endpoint using the same business requirement.",
+        "Backend count/tenant failures remain failures even when the screen appears correct.",
+        "Record actual browser/application builds, fixtures, screenshot and reproduction input."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-305",
+      "milestone": 3,
+      "title": "Qualify Firefox and WebKit execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-304"
+      ],
+      "deliverable": "Published browser/version matrix and shared journey execution across three engines.",
+      "acceptance_criteria": [
+        "Run known-good and seeded-bad workflows on Chromium, Firefox and WebKit.",
+        "Explain engine-specific exclusions; Playwright WebKit results do not automatically certify every Safari/device version.",
+        "Pin browser/runner versions and preserve compatible queued execution during upgrades."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-306",
+      "milestone": 3,
+      "title": "Support WebSocket and asynchronous application events",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-301",
+        "E2E-302"
+      ],
+      "deliverable": "Bounded WebSocket sessions and correlated asynchronous event observation.",
+      "acceptance_criteria": [
+        "Authenticate and apply destination policy to upgraded connections.",
+        "Timeout, reconnect and duplicate messages retain sequence/attempt evidence.",
+        "Observe eventual state to explicit deadlines; absence of an event without sufficient coverage remains unknown."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-307",
+      "milestone": 3,
+      "title": "Implement multi-target bindings and workflow data flow",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-304",
+        "E2E-207"
+      ],
+      "deliverable": "Validated step compiler joining applications, agent sessions, APIs and observer outputs.",
+      "acceptance_criteria": [
+        "Transfer typed approved outputs through aliases; reject missing bindings and cross-project references.",
+        "Preserve business correlation across targets while recording each candidate/deployment separately.",
+        "Mixed candidate changes cannot claim a single trusted release pass; fixtures and compensation span the whole scenario."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-308",
+      "milestone": 3,
+      "title": "Qualify web and API support with seeded failures",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-305",
+        "E2E-306",
+        "E2E-307",
+        "E2E-208"
+      ],
+      "deliverable": "Web/API compatibility report, held-out results and controlled recovery evidence.",
+      "acceptance_criteria": [
+        "Detect missing writes, wrong accounts, stale UI, duplicate effects and contract failures.",
+        "Exercise browser crash, redirect attack, credential expiry and asynchronous delays.",
+        "Only tested platform/version cells advance from Planned to Qualified; unsupported cells remain explicit."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-401",
+      "milestone": 4,
+      "title": "Implement generic HTTP agent sessions",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-202",
+        "E2E-203"
+      ],
+      "deliverable": "Versioned request/response mappings, session creation, bounded invocation and asynchronous polling.",
+      "acceptance_criteria": [
+        "Support synchronous and queued responses without fabricating unobservable tool events.",
+        "Propagate deadlines and declare actual cancellation/idempotency capability.",
+        "Verify task outcome through independent observers and preserve opaque usage limitations."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-402",
+      "milestone": 4,
+      "title": "Deliver a versioned SDK integration bridge",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 9
+      },
+      "dependencies": [
+        "E2E-401",
+        "E2E-103"
+      ],
+      "deliverable": "First-class adapter harness with an OpenAI Agents SDK bridge as the initial reference integration.",
+      "acceptance_criteria": [
+        "Pin supported SDK/protocol versions and record instrumented session/tool event coverage.",
+        "Keep customer runtime authentication scoped; bridge executes outside the control API.",
+        "Conformance tests cover missing spans, dropped events and SDK changes; telemetry does not replace outcome checking."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-403",
+      "milestone": 4,
+      "title": "Implement scoped MCP tool integration",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-401",
+        "E2E-204"
+      ],
+      "deliverable": "MCP client adapter for approved tool servers, capability discovery and bounded calls.",
+      "acceptance_criteria": [
+        "Pin a protocol revision and validate tool schemas as data rather than executable control schemas.",
+        "Enforce approved tools, destinations, argument limits and secret scope outside prompts.",
+        "Handle tool errors, cancellation and changed capabilities without inventing successful actions."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-404",
+      "milestone": 4,
+      "title": "Normalize agent/tool telemetry and provenance",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-402",
+        "E2E-206"
+      ],
+      "deliverable": "Versioned event adapters for tool/model spans and OpenTelemetry ingestion.",
+      "acceptance_criteria": [
+        "Retain original event references, producer identity, clock/source and adapter version.",
+        "Missing instrumentation is unavailable rather than proof that no action happened.",
+        "Measure observable usage across all attempts and keep reported, estimated and reconciled charges separate."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-405",
+      "milestone": 4,
+      "title": "Implement scripted multi-turn and session-memory cases",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-401",
+        "E2E-203"
+      ],
+      "deliverable": "Conversation runner for clarification, correction and context retention with clean sessions.",
+      "acceptance_criteria": [
+        "Reset conversation and persistent fixture memory according to the declared case contract.",
+        "Preserve exact turns, candidate settings and allowed actions under independent limits.",
+        "Detect ignored corrections and inappropriate cross-session memory using approved outcome expectations."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-406",
+      "milestone": 4,
+      "title": "Enforce meaningful tool and agent behavior assertions",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-403",
+        "E2E-404",
+        "E2E-405",
+        "E2E-207"
+      ],
+      "deliverable": "Required/prohibited action, permission and argument checks with evidence requirements.",
+      "acceptance_criteria": [
+        "Allow alternative legitimate execution paths; do not require an unnecessary exact tool sequence.",
+        "Unavailable spans make telemetry-dependent assertions unknown.",
+        "A high response-quality score cannot compensate for a witnessed prohibited action or incorrect business state."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-407",
+      "milestone": 4,
+      "title": "Implement multi-agent handoffs across applications",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 9
+      },
+      "dependencies": [
+        "E2E-406",
+        "E2E-307"
+      ],
+      "deliverable": "Correlated multi-agent workflow steps with explicit handoff contracts and shared business outcome.",
+      "acceptance_criteria": [
+        "Track each agent identity, conversation, permissions and target candidate separately.",
+        "Exercise handoff loss, duplicate ownership, conflicting actions and escalation.",
+        "Bound each agent and overall work; propagate cancellation and cleanup across the workflow."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-408",
+      "milestone": 4,
+      "title": "Qualify agent adapters and recovery behavior",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-407",
+        "E2E-208"
+      ],
+      "deliverable": "Agent compatibility matrix and independent assessment of action-taking workflows.",
+      "acceptance_criteria": [
+        "Detect false success, unauthorized action, duplicate write, stale context and handoff defects.",
+        "Test timeouts before action and after success without masking intermittent failures.",
+        "Publish per-adapter capabilities and version limits; generic HTTP support is not automatic support for every framework."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-501",
+      "milestone": 5,
+      "title": "Validate mobile infrastructure and device eligibility",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-205",
+        "E2E-208"
+      ],
+      "deliverable": "Appium-based mobile runner design and measured emulator, macOS host and real-device feasibility.",
+      "acceptance_criteria": [
+        "Publish Android/iOS versions, required app builds, signing, permissions and device availability.",
+        "Document Appium driver versions and supported public accessibility/test interfaces.",
+        "Validate device provider/private-host credentials, EU data routes and cost before approving the mobile forecast."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-502",
+      "milestone": 5,
+      "title": "Implement Android application execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-501",
+        "E2E-202"
+      ],
+      "deliverable": "Android runner using Appium UiAutomator2 for install, launch, interaction and evidence.",
+      "acceptance_criteria": [
+        "Execute native and supported hybrid app workflows against pinned emulator/device images.",
+        "Collect app build, OS/device identity, logs and screenshots under per-run scope.",
+        "Handle denied permissions, lost device, crash and app reset as explicit execution outcomes."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-503",
+      "milestone": 5,
+      "title": "Implement iOS application execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-501",
+        "E2E-202"
+      ],
+      "deliverable": "iOS runner using Appium XCUITest on enrolled macOS simulator/device hosts.",
+      "acceptance_criteria": [
+        "Validate signing, provisioning, app build and supported Xcode/OS versions before dispatch.",
+        "Use dedicated sessions and approved test interfaces for app actions and authentication.",
+        "Device disconnect, expired provisioning and automation denial cannot produce a passing business verdict."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-504",
+      "milestone": 5,
+      "title": "Implement mobile fixture and session lifecycle",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-502",
+        "E2E-503",
+        "E2E-203"
+      ],
+      "deliverable": "Per-run application data, accounts, permission state and cleanup on Android and iOS.",
+      "acceptance_criteria": [
+        "Repeated runs start from declared clean state and do not share tokens, media or notifications.",
+        "Support deep-link/navigation setup only within approved application permissions.",
+        "Quarantine devices with uncertain cleanup and retain an auditable reconciliation record."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-505",
+      "milestone": 5,
+      "title": "Deliver mobile-to-agent-to-backend-to-web workflows",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-504",
+        "E2E-307",
+        "E2E-401"
+      ],
+      "deliverable": "Cross-application scenario initiated on mobile with agent/API outcomes and web confirmation.",
+      "acceptance_criteria": [
+        "Correlate the business entity across mobile, agent, observer and browser target bindings.",
+        "Seed wrong-account, duplicate submission and delayed synchronization defects.",
+        "Preserve each application build and evidence trail; one surface cannot erase another required failure."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-506",
+      "milestone": 5,
+      "title": "Integrate real-device scheduling and leases",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 9
+      },
+      "dependencies": [
+        "E2E-501",
+        "E2E-205"
+      ],
+      "deliverable": "Device allocation, exclusive leases, queued capacity and provider/private-host integration.",
+      "acceptance_criteria": [
+        "Prevent two assignments sharing an exclusive device or leaking prior session data.",
+        "Account for allocated, failed and idle billable device time with provider provenance.",
+        "Handle lease loss, cancellation and release failure without accepting stale task completion."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-507",
+      "milestone": 5,
+      "title": "Collect correlated mobile evidence and reproduction",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-504",
+        "E2E-206"
+      ],
+      "deliverable": "Screenshots, bounded video/logs, action timeline and build/device reproduction manifest.",
+      "acceptance_criteria": [
+        "Minimize sensitive recording and authorize every download/export.",
+        "Align actions with API/agent observations without assuming synchronized clocks.",
+        "Missing recordings remain visible and produce unknown checks only where that evidence is required."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-508",
+      "milestone": 5,
+      "title": "Qualify Android and iOS product support",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-505",
+        "E2E-506",
+        "E2E-507"
+      ],
+      "deliverable": "Per-version emulator/real-device conformance and end-to-end assessment report.",
+      "acceptance_criteria": [
+        "Run known-good and seeded-defect cases on each committed Android/iOS matrix cell.",
+        "Exercise app crash, device loss, stale state, permission change and cleanup failure.",
+        "No mobile support cell is complete until outcome, isolation, recovery and reproduction gates pass."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-601",
+      "milestone": 6,
+      "title": "Validate desktop automation and OS host requirements",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-205",
+        "E2E-208"
+      ],
+      "deliverable": "Desktop runner feasibility report and signed native accessibility-bridge interfaces.",
+      "acceptance_criteria": [
+        "Specify Windows UI Automation, macOS Accessibility and Linux AT-SPI support boundaries.",
+        "Identify OS versions, interactive sessions, display requirements, packaging and automation permissions.",
+        "Measure native-bridge effort and host costs; revise estimates before committing production dates."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-602",
+      "milestone": 6,
+      "title": "Implement Windows desktop execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 7,
+        "max": 12
+      },
+      "dependencies": [
+        "E2E-601",
+        "E2E-202"
+      ],
+      "deliverable": "Enrolled Windows runner with an allowlisted UI Automation bridge and isolated user session.",
+      "acceptance_criteria": [
+        "Launch pinned application builds, interact through supported controls and collect evidence.",
+        "Validate session locks, elevation boundaries and application permissions before dispatch.",
+        "Crash, inaccessible controls and host disconnect preserve honest execution and cleanup status."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-603",
+      "milestone": 6,
+      "title": "Implement macOS desktop execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 7,
+        "max": 12
+      },
+      "dependencies": [
+        "E2E-601",
+        "E2E-202"
+      ],
+      "deliverable": "Enrolled macOS runner with a signed Accessibility bridge and per-run profiles.",
+      "acceptance_criteria": [
+        "Validate accessibility/screen-capture consent and application signing before execution.",
+        "Restrict actions to approved application processes and accessible elements.",
+        "Permission revocation, screen lock and application crash do not become business passes."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-604",
+      "milestone": 6,
+      "title": "Implement Linux desktop execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 7,
+        "max": 12
+      },
+      "dependencies": [
+        "E2E-601",
+        "E2E-202"
+      ],
+      "deliverable": "Linux runner using an AT-SPI bridge on a qualified desktop/display stack.",
+      "acceptance_criteria": [
+        "Publish supported distribution, desktop, X11/Wayland and accessibility combinations.",
+        "Execute fixture-controlled app workflows with isolated account/profile state.",
+        "Unsupported display/control access is rejected before execution or recorded as missing required capability."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-605",
+      "milestone": 6,
+      "title": "Integrate Electron application execution",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-303",
+        "E2E-601"
+      ],
+      "deliverable": "Playwright-backed adapter for supported Electron application builds.",
+      "acceptance_criteria": [
+        "Pin Electron/app versions and distinguish browser-renderer checks from native OS behavior.",
+        "Keep main-process permissions and local file access within runner policy.",
+        "Verify business outcome through an independent observer and preserve native-bridge fallback limits."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-606",
+      "milestone": 6,
+      "title": "Implement desktop profiles, leases and cleanup",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-602",
+        "E2E-603",
+        "E2E-604",
+        "E2E-605"
+      ],
+      "deliverable": "Exclusive desktop-host/session allocation, per-run user data and cleanup reconciliation.",
+      "acceptance_criteria": [
+        "Do not share credential stores, clipboard content, files or background processes across runs.",
+        "Recover host disconnect and locked sessions without unsafe repeated business actions.",
+        "Quarantine hosts with uncertain cleanup; cancellation tracks remaining processes and side effects."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-607",
+      "milestone": 6,
+      "title": "Deliver desktop-to-agent-to-API workflows",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-606",
+        "E2E-307",
+        "E2E-401",
+        "E2E-206"
+      ],
+      "deliverable": "Desktop business journey correlated with agent interaction, API state and another application.",
+      "acceptance_criteria": [
+        "Record application build, OS session, agent settings and backend deployment identities.",
+        "Detect wrong-account, duplicated operation and misleading UI completion.",
+        "Export actions, expected/observed outcomes and fixture setup sufficient for another engineer to reproduce."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-608",
+      "milestone": 6,
+      "title": "Qualify Windows, macOS and Linux desktop support",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-607",
+        "E2E-208"
+      ],
+      "deliverable": "Desktop compatibility and security report for every committed OS/application-technology cell.",
+      "acceptance_criteria": [
+        "Execute independent positive and seeded-negative workflows on all committed desktop families.",
+        "Exercise host restart, application crash, permission loss and stale session completion.",
+        "Document unsupported inaccessible/custom-rendered controls without claiming universal desktop compatibility."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-701",
+      "milestone": 7,
+      "title": "Define voice sessions and audio evidence contracts",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-103",
+        "E2E-202"
+      ],
+      "deliverable": "Versioned voice target adapter and synthetic audio/conversation fixture format.",
+      "acceptance_criteria": [
+        "Specify supported session transport, audio encoding, languages and speaker-turn expectations.",
+        "Record consent/data handling, synthetic fixture provenance and latency measurement points.",
+        "Keep transcript-based quality and actual downstream task completion as separate checks."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-702",
+      "milestone": 7,
+      "title": "Implement bounded bidirectional audio execution",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-701",
+        "E2E-205",
+        "E2E-204"
+      ],
+      "deliverable": "WebRTC voice adapter, audio streaming worker and scoped private-runner integration.",
+      "acceptance_criteria": [
+        "Bound call duration, output audio, reconnects and concurrency outside agent instructions.",
+        "Apply approved destination/media relay policy; record actual transport/provider identities.",
+        "Connection loss and incomplete audio make required evidence unknown; retain disconnect and chargeable-duration events."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-703",
+      "milestone": 7,
+      "title": "Capture transcripts, timestamps and audio provenance",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-702",
+        "E2E-206"
+      ],
+      "deliverable": "Versioned transcript/timing pipeline with controlled audio storage and language metadata.",
+      "acceptance_criteria": [
+        "Preserve original audio references and speech-recognition model/version where used.",
+        "Flag transcription uncertainty and clock/alignment limits rather than inventing words.",
+        "Link audio, turns, agent events and business observations under authorized artifact access."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-704",
+      "milestone": 7,
+      "title": "Implement interruption, silence and turn-taking cases",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-702",
+        "E2E-405"
+      ],
+      "deliverable": "Repeatable voice scenarios for interruption, latency, silence, correction and clarification.",
+      "acceptance_criteria": [
+        "Use labelled synthetic/consented fixtures and version timing tolerances.",
+        "Measure response onset and interruption handling from declared capture points.",
+        "Separate transport failure, transcription error, conversational quality and business action failure."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-705",
+      "milestone": 7,
+      "title": "Verify voice-triggered business outcomes",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-703",
+        "E2E-704",
+        "E2E-207"
+      ],
+      "deliverable": "Voice-to-agent-to-API scenarios checked against authoritative business state.",
+      "acceptance_criteria": [
+        "A spoken success statement cannot override a missing, duplicate or unauthorized action.",
+        "Correlate the created entity and identity to the audio session and fixture namespace.",
+        "Observe delayed effects through the declared window and preserve uncertain outcomes."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-706",
+      "milestone": 7,
+      "title": "Deliver voice escalation and agent-handoff workflows",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 9
+      },
+      "dependencies": [
+        "E2E-705",
+        "E2E-407"
+      ],
+      "deliverable": "Cross-agent voice workflow with escalation, context transfer and web/desktop confirmation.",
+      "acceptance_criteria": [
+        "Track the receiving agent, transferred context, ownership and conversation permissions.",
+        "Seed dropped handoff, duplicate actions and inconsistent identity defects.",
+        "Bound overall workflow duration and compensation across all affected targets."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-707",
+      "milestone": 7,
+      "title": "Enforce audio privacy, retention and provider routing",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 4,
+        "max": 7
+      },
+      "dependencies": [
+        "E2E-703",
+        "E2E-206",
+        "E2E-201"
+      ],
+      "deliverable": "Voice-specific retention, access, redaction/minimization and EU provider routing policy.",
+      "acceptance_criteria": [
+        "Approve speech/model/media service data routes and terms before customer content is sent.",
+        "Delete audio, transcripts and derived artifacts under tenant retention policy.",
+        "Test revoked access and sensitive-content handling; never promise perfect automatic audio redaction."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-708",
+      "milestone": 7,
+      "title": "Qualify voice execution and outcome verification",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-706",
+        "E2E-707",
+        "E2E-208"
+      ],
+      "deliverable": "Voice compatibility matrix, independent labelled assessment and recovery evidence.",
+      "acceptance_criteria": [
+        "Assess committed transports/languages and acoustic conditions using held-out audio cases.",
+        "Detect misleading spoken success, failed interruption, incorrect handoff and duplicate side effects.",
+        "Publish speech uncertainty, unsupported telephony protocols and provider-identity limits explicitly."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-801",
+      "milestone": 8,
+      "title": "Deliver structured multi-application scenario authoring",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-108",
+        "E2E-103",
+        "E2E-202"
+      ],
+      "deliverable": "Guided form/JSON editor, target binding, validation, review and immutable publishing.",
+      "acceptance_criteria": [
+        "Select approved adapter steps, fixtures, assertions and limits across all supported surfaces.",
+        "Validate typed output bindings and required capabilities without executing arbitrary user code.",
+        "Review diffs preserve protected business expectations; AI suggestions remain drafts until approved."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-802",
+      "milestone": 8,
+      "title": "Deliver dataset import, labels and version management",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-801",
+        "E2E-105",
+        "E2E-207"
+      ],
+      "deliverable": "JSON/CSV import, provenance, development/calibration/assessment splits and published versions.",
+      "acceptance_criteria": [
+        "Validate case fields and expected outcomes with bounded import sizes.",
+        "Enforce tenant scope and prevent holdout leakage into generation or evaluator tuning.",
+        "Every run resolves fixed cases; reviewed production examples keep redaction and fixture provenance."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-803",
+      "milestone": 8,
+      "title": "Deliver scheduling, CLI and public execution APIs",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-107",
+        "E2E-801",
+        "E2E-205"
+      ],
+      "deliverable": "Schedules, asynchronous APIs, scoped CLI and JSON/JUnit exports across runner families.",
+      "acceptance_criteria": [
+        "Support run, inspect, cancel, findings, compare and export with stable documented exit codes.",
+        "Schedules respect budgets, runner eligibility, tenant fairness and cancellation.",
+        "Exports preserve all attempts, NOT_TESTED/UNKNOWN results and platform/candidate manifests."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-804",
+      "milestone": 8,
+      "title": "Deliver comparisons and cross-layer investigation",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-802",
+        "E2E-207",
+        "E2E-206"
+      ],
+      "deliverable": "Evidence timeline, findings explorer and matched baseline/candidate analysis.",
+      "acceptance_criteria": [
+        "Display per-target versions, hard failures, incomplete cases, latency/cost and denominators.",
+        "Flag changed datasets/evaluators/environments; never pool incompatible trials into a misleading score.",
+        "Another engineer can reproduce a finding without founder operation; suspected causes remain hypotheses."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-805",
+      "milestone": 8,
+      "title": "Add calibrated advisory AI assistance and protected repair",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-804",
+        "E2E-405",
+        "E2E-703"
+      ],
+      "deliverable": "Reviewable scenario suggestions, failure summaries, qualitative rubrics and locator/data repair proposals.",
+      "acceptance_criteria": [
+        "Calibrate language/voice rubrics against independent labels and retain uncertainty/model identity.",
+        "Never grant permissions or change required counts, severity, ownership or release policy through generated content.",
+        "Repair proposals require review, equivalent intent and rerunning protected assertions; no silent skips or weakening."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-806",
+      "milestone": 8,
+      "title": "Deliver revision-bound CI/CD and signed webhooks",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-803",
+        "E2E-804",
+        "E2E-307"
+      ],
+      "deliverable": "GitHub checks, versioned release policies, signed webhook delivery and audited expiring overrides.",
+      "acceptance_criteria": [
+        "Attest each tested deployment/application build and reject stale, missing or changed identities for trusted gates.",
+        "Handle duplicate, tampered and replayed webhooks idempotently; isolate untrusted pull-request credentials.",
+        "Override requires authorized actor, reason and expiry; original failed/inconclusive result remains visible."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-807",
+      "milestone": 8,
+      "title": "Deliver subscription and commercial usage administration",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-107",
+        "E2E-104"
+      ],
+      "deliverable": "Plan entitlements, usage allowances, metered overages, invoices and payment-provider integration.",
+      "acceptance_criteria": [
+        "Reconcile all-attempt usage with billable units; distinguish estimates, adjustments and provider charges.",
+        "Payment webhook retries cannot double-charge or mutate historical usage.",
+        "Enforce configurable hard caps, disclose device/voice support costs and provide cancellation/export/offboarding flows."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-808",
+      "milestone": 8,
+      "title": "Deliver independent customer onboarding and settings",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-801",
+        "E2E-802",
+        "E2E-803",
+        "E2E-806",
+        "E2E-807"
+      ],
+      "deliverable": "Self-service project setup, connection checks, runner enrollment, templates and actionable diagnostics.",
+      "acceptance_criteria": [
+        "User completes connect, configure, run, inspect, fix and rerun without founder/database operation.",
+        "Explain platform prerequisites, unsupported capabilities, retention and costs before execution.",
+        "Exercise billing/access revocation and offboarding; track interventions separately from completed product behavior."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-901",
+      "milestone": 9,
+      "title": "Freeze independent assessments for every application class",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-308",
+        "E2E-408",
+        "E2E-508",
+        "E2E-608",
+        "E2E-708",
+        "E2E-804"
+      ],
+      "deliverable": "Six separate held-out assessment sets with independently approved outcomes and severity labels.",
+      "acceptance_criteria": [
+        "At least 40 distinct cases per class: 20 valid, 20 seeded faults, including 10 designated critical faults.",
+        "Exclude development and calibration cases; report counts, misses, false blocks and unknowns per class.",
+        "All designated critical faults are detected; clean finite samples are smoke gates, not universal reliability claims."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-902",
+      "milestone": 9,
+      "title": "Qualify complete cross-application business journeys",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-901",
+        "E2E-808",
+        "E2E-706",
+        "E2E-607",
+        "E2E-505"
+      ],
+      "deliverable": "Production-readiness evidence for mobile-to-agent-to-API-to-web, desktop-to-agent and voice-handoff workflows.",
+      "acceptance_criteria": [
+        "All committed surfaces participate in correlated end-to-end journeys with independent final-state checks.",
+        "Missing mandatory stage, identity or evidence prevents a trusted release pass.",
+        "An independent operator configures, executes, investigates and reruns documented journeys using published interfaces."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-903",
+      "milestone": 9,
+      "title": "Measure representative capacity and unit economics",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-107",
+        "E2E-803",
+        "E2E-508",
+        "E2E-608",
+        "E2E-708"
+      ],
+      "deliverable": "Mixed browser/device/desktop/voice/agent load benchmark and all-attempt cost model.",
+      "acceptance_criteria": [
+        "Run at least 100 eligible configurations per application class at declared concurrency; include blocked/inconclusive runs in completion denominator.",
+        "At least 90 of 100 per class complete execution and required evaluation without intervention; report sample limits.",
+        "Saturation yields bounded queues or explicit rejection; measure device, compute, model, storage, orchestration and direct support costs."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-904",
+      "milestone": 9,
+      "title": "Close production security and isolation findings",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 7,
+        "max": 12
+      },
+      "dependencies": [
+        "E2E-902",
+        "E2E-903",
+        "E2E-707",
+        "E2E-205",
+        "E2E-808"
+      ],
+      "deliverable": "Independent review and evidence pack for cloud, private runners, devices, OS bridges and voice data.",
+      "acceptance_criteria": [
+        "No unresolved critical tenant leakage, credential exposure, uncontrolled egress or unbounded spending.",
+        "Test prompt injection, malicious URLs, artifact access, runner impersonation and OS/device session leakage.",
+        "Verify least privilege, revocation and redaction/minimization using reproducible adversarial fixtures."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-905",
+      "milestone": 9,
+      "title": "Finish retention, deletion and audit controls",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-206",
+        "E2E-104",
+        "E2E-808"
+      ],
+      "deliverable": "Retention jobs and attributable access, policy, billing and runner-management audit history.",
+      "acceptance_criteria": [
+        "Delete database evidence, S3 audio/video/traces, indexes and derived examples according to data-class policy.",
+        "Document backup expiry lag and evidence access after signed-link expiry/revocation.",
+        "Default raw artifacts to 14 days and run summaries to 90 days; changes require authorized configuration and audit."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-906",
+      "milestone": 9,
+      "title": "Prove restore, rollout and operating ownership",
+      "owner": "X",
+      "effort_engineering_days": {
+        "min": 6,
+        "max": 10
+      },
+      "dependencies": [
+        "E2E-904",
+        "E2E-905",
+        "E2E-106"
+      ],
+      "deliverable": "Measured restore exercise, compatible runner rollout and incident/cleanup runbooks.",
+      "acceptance_criteria": [
+        "Restore metadata plus referenced evidence and record observed recovery time and loss window.",
+        "Queued workflows and platform-specific runner versions remain compatible during deployment or use deliberate routing.",
+        "Assign incident, provider outage, runner patching, stuck cleanup and billing-reconciliation owners."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-907",
+      "milestone": 9,
+      "title": "Publish documentation, support and compatibility evidence",
+      "owner": "P",
+      "effort_engineering_days": {
+        "min": 5,
+        "max": 8
+      },
+      "dependencies": [
+        "E2E-902",
+        "E2E-906",
+        "E2E-808"
+      ],
+      "deliverable": "API/CLI reference, integration guides, operating limits, support matrix and offboarding documentation.",
+      "acceptance_criteria": [
+        "Documentation covers every committed browser, OS/device, voice and agent integration with tested versions.",
+        "Independent operator follows onboarding/troubleshooting/export instructions without hidden manual steps.",
+        "No unsupported matrix cell is marketed as qualified; publish measured limits rather than invented service guarantees."
+      ],
+      "status": "Planned"
+    },
+    {
+      "id": "E2E-908",
+      "milestone": 9,
+      "title": "Approve complete-product general availability",
+      "owner": "E",
+      "effort_engineering_days": {
+        "min": 3,
+        "max": 5
+      },
+      "dependencies": [
+        "E2E-901",
+        "E2E-902",
+        "E2E-903",
+        "E2E-904",
+        "E2E-905",
+        "E2E-906",
+        "E2E-907",
+        "E2E-805",
+        "E2E-806",
+        "E2E-807"
+      ],
+      "deliverable": "Signed production readiness decision covering the complete committed product.",
+      "acceptance_criteria": [
+        "All required web/API/agent/mobile/desktop/voice compatibility, workflow, security and operating gates have evidence.",
+        "No partial milestone, checklist tick, customer recruitment or revenue target substitutes for engineering completion.",
+        "Publish outstanding noncritical limitations, release policy, rollback/incident ownership and a versioned supported-product contract."
+      ],
+      "status": "Planned"
+    }
+  ]
+}

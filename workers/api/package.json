@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/worker-api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "REST, GraphQL and WebSocket execution plus separately credentialed authoritative observers."
+}

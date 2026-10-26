@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Authenticated control API, tenant-scoped persistence, run admission/outbox and artifact authorization."
+}

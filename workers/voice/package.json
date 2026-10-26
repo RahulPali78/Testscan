@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/worker-voice",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bounded WebRTC/audio sessions, timing, transcripts and voice-triggered business workflows."
+}

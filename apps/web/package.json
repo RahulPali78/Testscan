@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dashboard, connections, scenario authoring, run investigation and commercial settings."
+}

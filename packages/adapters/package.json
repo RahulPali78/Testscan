@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/adapters",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Capability negotiation and prepare/execute/observe/cancel/cleanup lifecycle contracts."
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PostgreSQL migrations, tenant-scoped repositories and immutable version persistence."
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/usage",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Atomic reservations, execution limits, all-attempt consumption and reconciliation."
+}

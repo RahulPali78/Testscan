@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/worker-agent",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "HTTP/SDK/MCP agent sessions, observable tool events and bounded multi-agent handoffs."
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/runners",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Revocable private runner enrollment, outbound assignments, capabilities and lease fencing."
+}

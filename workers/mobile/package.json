@@ -1,0 +1,7 @@
+{
+  "name": "@veriqo/worker-mobile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Android/iOS Appium integration, emulator/simulator and real-device execution."
+}
