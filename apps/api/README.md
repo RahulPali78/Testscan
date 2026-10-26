@@ -1,6 +1,8 @@
-# @veriqo/api
+# Veriqo control API foundation
 
-Authenticated control API, tenant-scoped persistence, run admission/outbox and artifact authorization.
+Implemented: process liveness, actual dependency readiness, system observations,
+planned capability disclosure and bounded scenario schema validation. A separate
+local reference app supplies synthetic fault fixtures. See docs/development.md.
 
-Status: planned. This package is a workspace boundary only; runtime implementation
-and relevant acceptance checks will be added through the shared backlog.
+Listeners default to loopback. Tenant authentication/authorization, immutable
+run creation, outbox dispatch and customer execution are not implemented.

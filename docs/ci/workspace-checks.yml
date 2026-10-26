@@ -16,5 +16,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - name: Validate workspace and product backlog
-        run: npm run check
+      - name: Install pinned package manager
+        run: npm install --global pnpm@11.25.0
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate workspace, types and unit behavior
+        run: pnpm check
+      - name: Build the dashboard
+        run: pnpm build
+      - name: Exercise PostgreSQL, Temporal and API integration
+        run: pnpm test:integration
+      - name: Stop development infrastructure
+        if: always()
+        run: pnpm infra:down

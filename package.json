@@ -9,7 +9,22 @@
     "pnpm": ">=11 <12"
   },
   "scripts": {
-    "check": "node scripts/check-workspace.mjs"
+    "check": "node scripts/check-workspace.mjs && pnpm typecheck && pnpm test",
+    "check:workspace": "node scripts/check-workspace.mjs",
+    "typecheck": "pnpm --filter @veriqo/contracts typecheck && pnpm --filter @veriqo/db typecheck && pnpm --filter @veriqo/api typecheck && pnpm --filter @veriqo/coordinator typecheck && pnpm --filter @veriqo/web typecheck",
+    "test": "node --import tsx --test --experimental-test-isolation=none packages/contracts/test/*.test.ts packages/db/test/*.test.ts apps/api/test/*.test.ts apps/coordinator/test/*.test.ts",
+    "test:integration": "node scripts/integration.mjs",
+    "dev": "node scripts/dev.mjs",
+    "dev:apps": "node scripts/dev.mjs --apps-only",
+    "infra:up": "docker compose -f infra/local/compose.yml up -d --wait",
+    "infra:down": "docker compose -f infra/local/compose.yml down",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx packages/db/src/migrate.ts",
+    "build": "pnpm --filter @veriqo/web build"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
   },
   "repository": {
     "type": "git",

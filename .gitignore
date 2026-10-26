@@ -19,3 +19,5 @@ test-results/
 .codex-attachments/
 .DS_Store
 Thumbs.db
+*.tsbuildinfo
+next-env.d.ts

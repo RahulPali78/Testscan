@@ -3,5 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Temporal workflow stages, dispatch, assignment fencing, cancellation and compensation."
+  "description": "Veriqo Temporal development worker and dependency probe.",
+  "scripts": { "dev": "tsx watch src/worker.ts", "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "@veriqo/contracts": "workspace:*",
+    "@veriqo/db": "workspace:*",
+    "@temporalio/client": "1.24.0",
+    "@temporalio/worker": "1.24.0",
+    "@temporalio/workflow": "1.24.0"
+  }
 }

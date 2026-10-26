@@ -1,6 +1,8 @@
-# @veriqo/coordinator
+# Temporal development coordinator
 
-Temporal workflow stages, dispatch, assignment fencing, cancellation and compensation.
+Implemented: a real task-queue worker, PostgreSQL heartbeat and foundationProbeWorkflow.
+The workflow delegates database/fixture calls to an activity, preserving deterministic
+workflow code. Integration tests execute it against the local Temporal server.
 
-Status: planned. This package is a workspace boundary only; runtime implementation
-and relevant acceptance checks will be added through the shared backlog.
+This proves development connectivity only. Customer run state, retries around
+external writes, cancellation reconciliation and compensation remain future work.

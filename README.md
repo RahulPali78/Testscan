@@ -10,11 +10,15 @@ verify the real outcome and provide reproducible release evidence.
 
 ## Current status
 
-This initial repository contains the complete-product planning documents, a shared
-72-task backlog, a pnpm workspace structure and automated bootstrap checks.
-Application services, execution adapters and infrastructure are **planned**, not
-implemented. There is no runnable dashboard or testing service yet. All six
-application classes remain required for complete-product general availability.
+The local development foundation includes a Next.js dashboard, Fastify API,
+versioned scenario/result contracts, PostgreSQL migrations, a Temporal worker and
+a controllable synthetic support application. The dashboard observes real service
+availability and validates scenario contracts through the API.
+
+Customer execution, authentication/tenant isolation, durable run admission,
+production deployment and adapter qualification remain to be implemented.
+Default listeners bind to loopback. All six application classes remain required
+for complete-product general availability.
 
 ## Planning documents
 
@@ -49,9 +53,33 @@ pnpm install --frozen-lockfile
 pnpm check
 ```
 
-The check validates workspace metadata, document anchors, the shared backlog,
-task dependencies and cross-document consistency. It does not test application
-features that have not been implemented.
+The check validates the workspace/backlog, type-checks implemented packages and
+runs contract/API/activity/migration tests. See docs/development.md for details.
+
+## Start the development foundation
+
+Docker with Compose is required. After installing dependencies, run:
+
+    pnpm dev
+
+This starts pinned PostgreSQL and Temporal containers, applies checksummed
+migrations and launches the dashboard, API, worker and reference application.
+
+| Service | Default address |
+| --- | --- |
+| Dashboard | http://127.0.0.1:3000 |
+| Control API | http://127.0.0.1:4000 |
+| Synthetic reference application | http://127.0.0.1:4100 |
+| Temporal UI | http://127.0.0.1:8233 |
+
+Copy .env.example to .env to customize settings. Ctrl+C stops application
+processes; pnpm infra:down stops containers while retaining their named volumes.
+Use pnpm dev:apps with already-running PostgreSQL and Temporal.
+
+Build the dashboard and test real dependency integration:
+
+    pnpm build
+    pnpm test:integration
 
 ## Continuous integration
 
@@ -71,6 +99,7 @@ permission. Local validation remains available through `pnpm check`.
 - Scoped credentials, immutable expected outcomes, independent state observers,
   explicit uncertainty, bounded execution and visible cleanup.
 
-Begin with E2E-101 (requirements and compatibility matrix) and E2E-102 (development
-foundation). Add runtime dependencies and service implementations through reviewed
-changes with reproducible acceptance evidence.
+E2E-102 (development foundation) and E2E-103 (contracts) are in progress. Requirements
+and the compatibility matrix still need domain-owner approval (E2E-101). Next
+work is tenant-scoped identity, immutable persistence and transactional admission,
+followed by bounded execution and independent outcome verification.

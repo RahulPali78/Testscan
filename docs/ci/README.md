@@ -1,8 +1,9 @@
 # Continuous integration template
 
 `workspace-checks.yml` contains the proposed GitHub Actions workflow. It validates
-workspace metadata, document anchors, task dependencies and cross-document backlog
-consistency using Node.js 24. It does not test unimplemented application services.
+workspace metadata, document anchors, task dependencies, TypeScript contracts,
+API behavior, dashboard build and PostgreSQL/Temporal integration using Node.js 24.
+It does not qualify unimplemented customer integrations.
 
 The workflow is not active. To enable it, an authorized repository maintainer
 must add its contents as `.github/workflows/ci.yml`, using GitHub directly or a

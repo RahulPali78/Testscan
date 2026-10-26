@@ -3,5 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Authenticated control API, tenant-scoped persistence, run admission/outbox and artifact authorization."
+  "description": "Veriqo development control API foundation.",
+  "scripts": { "dev": "tsx watch src/server.ts", "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "@veriqo/contracts": "workspace:*",
+    "@veriqo/db": "workspace:*",
+    "@temporalio/client": "1.24.0",
+    "fastify": "5.12.7"
+  }
 }

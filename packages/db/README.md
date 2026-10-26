@@ -1,6 +1,9 @@
-# @veriqo/db
+# PostgreSQL foundation
 
-PostgreSQL migrations, tenant-scoped repositories and immutable version persistence.
+Implemented: bounded connection pool, development heartbeat helpers and checksummed
+transactional migrations serialized with an advisory lock. Changed applied SQL
+causes rollback instead of silently modifying history.
 
-Status: planned. This package is a workspace boundary only; runtime implementation
-and relevant acceptance checks will be added through the shared backlog.
+The first migration stores development connectivity metadata only. Tenant/project
+repositories, row policies, immutable scenario/run data and transactional outbox
+admission remain future work.

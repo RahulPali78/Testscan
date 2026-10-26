@@ -3,5 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Versioned validated schemas for scenarios, target bindings, manifests, events and results."
+  "description": "Versioned validated schemas for scenarios, target bindings, manifests, events and results.",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc --noEmit" },
+  "dependencies": { "zod": "4.6.7" }
 }

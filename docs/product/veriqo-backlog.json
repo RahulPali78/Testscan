@@ -3,7 +3,7 @@
   "version": "2.0",
   "created": "2026-10-25",
   "scope": "Production end-to-end testing across web, APIs, AI agents, Android/iOS, desktop and voice; cross-application workflows and private runners required.",
-  "status": "Proposed implementation; all engineering tasks planned, none verified complete",
+  "status": "Development foundation and core contracts in progress; no customer adapter qualified",
   "assumptions": {
     "engineers": 3,
     "product_qa_hours_per_week": "15–20",
@@ -122,7 +122,7 @@
         "CI checks types, formatting, relevant tests, schema compatibility and migration smoke execution.",
         "Pin Node, package manager, images and browsers; keep secrets outside source and separate development, staging and production."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-103",
@@ -142,7 +142,7 @@
         "Include deadlines, operation/attempt IDs, execution identity and explicit unavailable evidence.",
         "Separate execution status, correctness verdict, evidence completeness and cleanup status; validate examples for every application class."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-104",

@@ -1,6 +1,9 @@
-# @veriqo/web
+# Veriqo dashboard
 
-Dashboard, connections, scenario authoring, run investigation and commercial settings.
+Implemented: live local dependency observations, unavailable states, automatic/manual
+refresh, a structured JSON scenario editor and API-backed validation. Next.js route
+handlers proxy to the control API without exposing database configuration.
 
-Status: planned. This package is a workspace boundary only; runtime implementation
-and relevant acceptance checks will be added through the shared backlog.
+Run from the repository root with pnpm dev. This is a development dashboard;
+customer execution, authentication, scenario publishing and run investigation
+remain later implementation work.

@@ -3,5 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "PostgreSQL migrations, tenant-scoped repositories and immutable version persistence."
+  "description": "PostgreSQL migrations, tenant-scoped repositories and immutable version persistence.",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc --noEmit" },
+  "dependencies": { "pg": "8.23.1" },
+  "devDependencies": { "@types/pg": "8.23.1" }
 }

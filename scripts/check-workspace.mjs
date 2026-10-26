@@ -40,7 +40,10 @@ function visit(id) {
   assert.ok(!active.has(id), `Dependency cycle: ${id}`);
   if (visited.has(id)) return;
   active.add(id);
-  assert.equal(task.status, 'Planned', `${id}: update implementation status and checks before claiming completion`);
+  assert.ok(['Planned', 'In progress', 'Complete'].includes(task.status), id + ': invalid engineering status');
+  if (task.status === 'Complete') {
+    assert.ok(Array.isArray(task.completion_evidence) && task.completion_evidence.length > 0, id + ': completed work needs acceptance evidence');
+  }
   assert.ok(plan.roles[task.owner], `${id}: unknown owner`);
   assert.ok(plan.milestones.some((m) => m.n === task.milestone), `${id}: missing milestone`);
   assert.ok(task.acceptance_criteria.length >= 3, `${id}: missing acceptance evidence`);
@@ -82,4 +85,4 @@ for (const file of ['veriqo-build-plan.html', 'veriqo-blueprint.html']) {
     assert.deepEqual([...checklist].sort(), [...tasks.keys()].sort(), 'Blueprint checklist differs from backlog');
   }
 }
-console.log(`Validated ${count} private workspace modules, 72 planned tasks, nine milestones, dependency closure and both self-contained product documents.`);
+console.log('Validated ' + count + ' private workspace modules, 72 tracked tasks, nine milestones, dependency closure and both product documents.');
