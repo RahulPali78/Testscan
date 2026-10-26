@@ -4,12 +4,17 @@
   "private": true,
   "type": "module",
   "description": "Veriqo Temporal development worker and dependency probe.",
-  "scripts": { "dev": "tsx watch src/worker.ts", "typecheck": "tsc --noEmit" },
+  "scripts": {
+    "dev": "tsx watch src/worker.ts",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@veriqo/contracts": "workspace:*",
     "@veriqo/db": "workspace:*",
     "@temporalio/client": "1.24.0",
     "@temporalio/worker": "1.24.0",
-    "@temporalio/workflow": "1.24.0"
+    "@temporalio/workflow": "1.24.0",
+    "zod": "4.6.7",
+    "@temporalio/activity": "1.24.0"
   }
 }

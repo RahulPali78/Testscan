@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Versioned validated schemas for scenarios, target bindings, manifests, events and results.",
-  "exports": { ".": "./src/index.ts" },
+  "exports": { ".": "./src/index.ts", "./product": "./src/product.ts" },
   "scripts": { "typecheck": "tsc --noEmit" },
   "dependencies": { "zod": "4.6.7" }
 }

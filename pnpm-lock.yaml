@@ -32,9 +32,18 @@ importers:
       fastify:
         specifier: 5.12.7
         version: 5.12.7
+      jose:
+        specifier: 6.2.13
+        version: 6.2.13
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
 
   apps/coordinator:
     dependencies:
+      '@temporalio/activity':
+        specifier: 1.24.0
+        version: 1.24.0
       '@temporalio/client':
         specifier: 1.24.0
         version: 1.24.0
@@ -50,12 +59,18 @@ importers:
       '@veriqo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
 
   apps/web:
     dependencies:
       '@veriqo/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      jose:
+        specifier: 6.2.13
+        version: 6.2.13
       next:
         specifier: 16.4.3
         version: 16.4.3(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -65,6 +80,9 @@ importers:
       react-dom:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
+      server-only:
+        specifier: 0.0.1
+        version: 0.0.1
     devDependencies:
       '@types/react':
         specifier: 19.3.0
@@ -85,6 +103,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@veriqo/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       pg:
         specifier: 8.23.1
         version: 8.23.1
@@ -1091,6 +1112,9 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
 
+  jose@6.2.13:
+    resolution: {integrity: sha512-7TIg10ZE1x82YediN+lcrPNvGMKge9yFHQD+Qho/b8y2adfugU3AsvvHfxV0fzyFllT6l9xCjf4RWY9g/Z9PJQ==}
+
   json-schema-ref-resolver@3.0.1:
     resolution: {integrity: sha512-w+HwgljXpVwZ3IidoUR1qPZxSOQ+NRQWuVe6a5pe8XbHsNZE4UAwVPUvzZagn7yBKbJtt6UJnRFYbNTRPZI45Q==}
 
@@ -1359,6 +1383,9 @@ packages:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   set-cookie-parser@3.2.1:
     resolution: {integrity: sha512-Npd1Pt+4zb3BrSZDPd2qFwRpS6b1EUEasRrO8xS0zMJi0fApXXK5YuzP0minyJnxwnFHoVoJwA55q0A0cu63gQ==}
@@ -2417,6 +2444,8 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
+  jose@6.2.13: {}
+
   json-schema-ref-resolver@3.0.1:
     dependencies:
       dequal: 2.0.3
@@ -2643,6 +2672,8 @@ snapshots:
   secure-json-parse@4.1.1: {}
 
   semver@7.8.5: {}
+
+  server-only@0.0.1: {}
 
   set-cookie-parser@3.2.1: {}
 

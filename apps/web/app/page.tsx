@@ -1,2 +1,2 @@
-import { Dashboard } from './workspace';
-export default function Page() { return <Dashboard />; }
+import { ProductWorkspace } from './product-workspace';
+export default function Page() { return <ProductWorkspace />; }

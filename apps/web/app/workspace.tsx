@@ -1,8 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { referenceScenario, type Session } from '@veriqo/contracts/product';
+import { RunWorkspace } from './run-workspace';
 import {
-  exampleScenario, ScenarioValidationSchema, SystemSnapshotSchema,
+  ScenarioValidationSchema, SystemSnapshotSchema,
   type SystemSnapshot, type ScenarioValidation,
 } from '@veriqo/contracts';
 
@@ -40,12 +42,12 @@ const surfaces = [
   { title: 'Voice', detail: 'Audio · Turns · Handoffs', icon: 'voice' },
 ];
 
-export function Dashboard() {
+export function Dashboard({ session, logout }: { session: Session; logout: () => void }) {
   const [snapshot, setSnapshot] = useState<SystemSnapshot | null>(null);
   const [connectionError, setConnectionError] = useState('');
   const [refreshing, setRefreshing] = useState(true);
   const request = useRef<AbortController | null>(null);
-  const [source, setSource] = useState(JSON.stringify(exampleScenario, null, 2));
+  const [source, setSource] = useState(JSON.stringify(referenceScenario, null, 2));
   const [validation, setValidation] = useState<ScenarioValidation | null>(null);
   const [validationError, setValidationError] = useState('');
   const [validating, setValidating] = useState(false);
@@ -105,7 +107,7 @@ export function Dashboard() {
         <span className="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m7 9 9 15L26 8M13 9l4 6" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
         <span>veriqo<span className="brand-dot">.</span></span>
       </a>
-      <div className="project-switch"><span className="project-avatar">V</span><div><strong>Development workspace</strong><span>Local environment</span></div><span className="project-chevron">⌄</span></div>
+      <div className="project-switch"><span className="project-avatar">V</span><div><strong>{session.user.display_name}</strong><span>Authenticated workspace</span></div><span className="project-chevron">⌄</span></div>
       <div className="nav-caption">WORKSPACE</div>
       <nav aria-label="Workspace sections">
         <a className="nav-item active" href="#environment"><Icon name="grid" />Overview<span className="nav-dot" /></a>
@@ -115,12 +117,13 @@ export function Dashboard() {
       <div className="sidebar-bottom"><Icon name="shield" /><strong>Outcomes over appearances.</strong><p>Independent evidence for the workflows that matter.</p><span className="sidebar-version">FOUNDATION · SCHEMA 2.0</span></div>
     </aside>
     <div className="workspace">
-      <header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>Overview</strong></div><span className="environment-pill"><i />Local development</span></header>
+      <header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>Overview</strong></div><div className="run-buttons"><span className="environment-pill"><i />{session.auth_mode}</span><button className="button secondary" onClick={logout}>Sign out</button></div></header>
       <main id="main">
         <div className="page-heading"><div><div className="eyebrow">YOUR VERIFICATION WORKSPACE</div><h1>A clearer view of what works.</h1><p>Connect the foundation. Define the outcome. Build with evidence.</p></div><button className="button secondary refresh-button" onClick={() => { void refresh(); }} disabled={refreshing}><span className={refreshing ? 'spin' : ''}><Icon name="refresh" size={17} /></span>{refreshing ? 'Checking…' : 'Refresh status'}</button></div>
 
-        <section className="intro-banner"><div className="intro-symbol"><Icon name="layers" size={26} /></div><div><span className="small-eyebrow">FOUNDATION IN PROGRESS</span><h2>Your first connection starts here.</h2><p>Live service checks and scenario validation are available. Customer test execution and account access are still being built.</p></div><a className="button primary" href="#scenario">Explore a scenario<Icon name="arrow" size={17} /></a></section>
+        <section className="intro-banner"><div className="intro-symbol"><Icon name="layers" size={26} /></div><div><span className="small-eyebrow">FOUNDATION IN PROGRESS</span><h2>Your first connection starts here.</h2><p>Live service checks and scenario validation are available. Authenticated reference execution is available. Customer adapters and full product qualification remain in development.</p></div><a className="button primary" href="#scenario">Explore a scenario<Icon name="arrow" size={17} /></a></section>
 
+        <RunWorkspace session={session} source={source} />
         <section id="environment" aria-labelledby="environment-title">
           <div className="section-heading"><div><h2 id="environment-title">Connected services</h2><p>Observed from your local control API. Refreshes every 15 seconds.</p></div><span className={'summary-status ' + (snapshot?.overall_status === 'healthy' ? 'is-healthy' : '')}><span className="status-dot" />{snapshot ? healthy + ' of 4 available' : refreshing ? 'Checking services' : 'API unavailable'}</span></div>
           {connectionError && <div className="notice error" role="alert">{connectionError}</div>}
@@ -135,8 +138,8 @@ export function Dashboard() {
         <section id="scenario" className="scenario-section" aria-labelledby="scenario-title">
           <div className="section-heading"><div><h2 id="scenario-title">Define the expected outcome</h2><p>A versioned contract connects actions, independent checks and resource limits.</p></div><span className="outline-badge">SCHEMA 2.0</span></div>
           <div className="scenario-layout">
-            <div className="scenario-context"><span className="scenario-icon"><Icon name="code" size={25} /></span><h3>One request.<br />Three independent checks.</h3><p>Ask an agent to create an urgent support ticket, inspect the actual record, then confirm the customer can see it.</p><ol className="journey"><li><span>01</span><div><strong>Invoke the agent</strong><p>A scripted, bounded request.</p></div></li><li><span>02</span><div><strong>Observe the business state</strong><p>Exactly one ticket. Correct account.</p></div></li><li><span>03</span><div><strong>Confirm the customer view</strong><p>The same ticket, visible in the portal.</p></div></li></ol><div className="context-note"><Icon name="shield" size={18} /><p>Validation checks the contract only. It does not publish or execute this scenario.</p></div></div>
-            <div className="editor-panel"><div className="editor-header"><span><i /><i /><i /></span><label htmlFor="scenario-source">support-ticket.scenario.json</label><button className="text-button" disabled={validating} onClick={() => { setSource(JSON.stringify(exampleScenario, null, 2)); setValidation(null); setValidationError(''); }}>Reset example</button></div><textarea id="scenario-source" aria-label="Scenario JSON" readOnly={validating} value={source} onChange={(event) => { setSource(event.target.value); setValidation(null); setValidationError(''); }} spellCheck={false} /><div className="editor-footer"><span>Structured inputs · Protected expectations</span><button className="button primary" onClick={() => { void validate(); }} disabled={validating}>{validating ? 'Validating…' : 'Validate contract'}<Icon name="arrow" size={16} /></button></div>
+            <div className="scenario-context"><span className="scenario-icon"><Icon name="code" size={25} /></span><h3>One request.<br />Three independent checks.</h3><p>Ask an agent to create an urgent support ticket, then independently verify the number, ownership and fields of stored records.</p><ol className="journey"><li><span>01</span><div><strong>Invoke the agent</strong><p>A scripted, bounded request.</p></div></li><li><span>02</span><div><strong>Observe the business state</strong><p>Exactly one ticket. Correct account.</p></div></li><li><span>03</span><div><strong>Verify the required fields</strong><p>Required title and expected priority.</p></div></li></ol><div className="context-note"><Icon name="shield" size={18} /><p>Validation checks the contract only. It does not publish or execute this scenario.</p></div></div>
+            <div className="editor-panel"><div className="editor-header"><span><i /><i /><i /></span><label htmlFor="scenario-source">support-ticket.scenario.json</label><button className="text-button" disabled={validating} onClick={() => { setSource(JSON.stringify(referenceScenario, null, 2)); setValidation(null); setValidationError(''); }}>Reset example</button></div><textarea id="scenario-source" aria-label="Scenario JSON" readOnly={validating} value={source} onChange={(event) => { setSource(event.target.value); setValidation(null); setValidationError(''); }} spellCheck={false} /><div className="editor-footer"><span>Structured inputs · Protected expectations</span><button className="button primary" onClick={() => { void validate(); }} disabled={validating}>{validating ? 'Validating…' : 'Validate contract'}<Icon name="arrow" size={16} /></button></div>
               <div aria-live="polite">{validationError && <div className="validation-result error" role="alert">{validationError}</div>}{validation?.valid && <div className="validation-result success"><Icon name="check" size={19} /><div><strong>Contract is valid</strong><p>{validation.target_count} targets · {validation.step_count} steps · {validation.required_check_count} required checks. Execution capabilities are not yet qualified.</p></div></div>}{validation && !validation.valid && <div className="validation-result error" role="alert"><div><strong>Review the contract</strong><ul>{validation.issues.slice(0, 10).map((issue, index) => <li key={index}><code>{issue.path || 'scenario'}</code>: {issue.message}</li>)}</ul></div></div>}</div>
             </div>
           </div>

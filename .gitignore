@@ -21,3 +21,5 @@ test-results/
 Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
+__pycache__/
+*.py[cod]

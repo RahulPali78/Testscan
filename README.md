@@ -10,15 +10,16 @@ verify the real outcome and provide reproducible release evidence.
 
 ## Current status
 
-The local development foundation includes a Next.js dashboard, Fastify API,
-versioned scenario/result contracts, PostgreSQL migrations, a Temporal worker and
-a controllable synthetic support application. The dashboard observes real service
-availability and validates scenario contracts through the API.
+The working increment includes authenticated workspaces and project roles,
+immutable scenario versions, transactional run admission, a durable Temporal
+execution workflow, independent state checks, evidence export and visible cleanup.
+The dashboard can execute the synthetic reference support workflow and distinguish
+correct, missing-write, duplicate-write and wrong-tenant behavior.
 
-Customer execution, authentication/tenant isolation, durable run admission,
-production deployment and adapter qualification remain to be implemented.
-Default listeners bind to loopback. All six application classes remain required
-for complete-product general availability.
+General customer connections, additional execution adapters, production deployment
+and qualification remain in development. All six application classes remain
+required for complete-product general availability. Start locally with pnpm dev,
+then choose a synthetic account on the sign-in screen.
 
 ## Planning documents
 
@@ -99,7 +100,8 @@ permission. Local validation remains available through `pnpm check`.
 - Scoped credentials, immutable expected outcomes, independent state observers,
   explicit uncertainty, bounded execution and visible cleanup.
 
-E2E-102 (development foundation) and E2E-103 (contracts) are in progress. Requirements
-and the compatibility matrix still need domain-owner approval (E2E-101). Next
-work is tenant-scoped identity, immutable persistence and transactional admission,
-followed by bounded execution and independent outcome verification.
+Shared platform tasks E2E-102 through E2E-108 are in progress, with reference
+compensation work under E2E-203. See the implementation status for tested behavior
+and outstanding gates. The next implementation increment is versioned customer
+connections, secret resolution and adapter conformance, followed by production
+execution isolation and the browser/API adapters.

@@ -1,8 +1,10 @@
-# Temporal development coordinator
+# Temporal coordinator
 
-Implemented: a real task-queue worker, PostgreSQL heartbeat and foundationProbeWorkflow.
-The workflow delegates database/fixture calls to an activity, preserving deterministic
-workflow code. Integration tests execute it against the local Temporal server.
+A transactional-outbox dispatcher starts stable referenceRunWorkflow identities.
+Activities load frozen inputs, execute one bounded reference action, independently
+observe state, persist evidence and compensate fixtures. Workflow history carries
+opaque run IDs. Separate cleanup retries preserve verdicts and fence stale work.
 
-This proves development connectivity only. Customer run state, retries around
-external writes, cancellation reconciliation and compensation remain future work.
+The heartbeat and foundationProbeWorkflow remain operational connectivity checks.
+See docs/development.md and docs/implementation-status.md for limits and remaining
+customer-runner, deployment, recovery and adapter qualification work.

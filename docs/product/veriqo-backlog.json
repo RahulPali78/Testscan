@@ -3,7 +3,7 @@
   "version": "2.0",
   "created": "2026-10-25",
   "scope": "Production end-to-end testing across web, APIs, AI agents, Android/iOS, desktop and voice; cross-application workflows and private runners required.",
-  "status": "Development foundation and core contracts in progress; no customer adapter qualified",
+  "status": "Shared platform and authenticated reference execution in progress; no customer adapter qualified",
   "assumptions": {
     "engineers": 3,
     "product_qa_hours_per_week": "15–20",
@@ -163,7 +163,7 @@
         "Only authorized roles publish criteria, manage connections or change release policy.",
         "Test guessed identifiers, revoked users/tokens and cross-project access using non-owner database roles."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-105",
@@ -184,7 +184,7 @@
         "Run creation and dispatch command commit atomically; scoped idempotency key plus changed payload returns conflict.",
         "Published scenario, dataset, target, evaluator and policy versions remain unchanged after edits."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-106",
@@ -206,7 +206,7 @@
         "Fence assignments by attempt and lease; preserve late evidence without accepting stale terminal completion.",
         "Worker death or ambiguous external write yields reconciliation or inconclusive execution, never automatic replay of unsafe writes."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-107",
@@ -227,7 +227,7 @@
         "Enforce controllable duration, turn and call limits outside model instructions; label opaque agent costs unavailable.",
         "Account for all attempts, in-flight work and reconciled versus estimated consumption; reject excess work explicitly."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-108",
@@ -249,7 +249,7 @@
         "Display execution, verdict, coverage, platform identity and cleanup independently.",
         "Polling stops on terminal execution; unauthorized users cannot inspect results or artifact references."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-201",
@@ -313,7 +313,7 @@
         "Record late writes and in-flight actions before declaring cleanup complete.",
         "Retry failed cleanup visibly; prevent unsafe reuse of contaminated accounts, devices or targets."
       ],
-      "status": "Planned"
+      "status": "In progress"
     },
     {
       "id": "E2E-204",

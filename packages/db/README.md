@@ -1,9 +1,11 @@
-# PostgreSQL foundation
+# PostgreSQL persistence
 
-Implemented: bounded connection pool, development heartbeat helpers and checksummed
-transactional migrations serialized with an advisory lock. Changed applied SQL
-causes rollback instead of silently modifying history.
+Checksummed transactional migrations, canonical identity/memberships, scoped
+project repositories, immutable scenario versions/run manifests, append-only
+evidence/assertions/audit records and a transactional dispatch outbox. Run admission
+serializes project concurrency and idempotency decisions. Workers use attempt
+fences; cleanup failures block new project runs.
 
-The first migration stores development connectivity metadata only. Tenant/project
-repositories, row policies, immutable scenario/run data and transactional outbox
-admission remain future work.
+Local development uses an administrative synthetic database account. Production
+non-owner service roles, RLS, retention/deletion and security review remain required.
+See docs/development.md for configuration and commands.

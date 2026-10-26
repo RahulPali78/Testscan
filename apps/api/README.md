@@ -1,8 +1,9 @@
-# Veriqo control API foundation
+# Veriqo control API
 
-Implemented: process liveness, actual dependency readiness, system observations,
-planned capability disclosure and bounded scenario schema validation. A separate
-local reference app supplies synthetic fault fixtures. See docs/development.md.
+Authenticated project roles, immutable scenario publication, bounded run admission,
+run/evidence/export access, cancellation and revocable service tokens. Public
+health probes observe PostgreSQL, Temporal, the coordinator and reference app.
+See docs/development.md for identity configuration, endpoints and local use.
 
-Listeners default to loopback. Tenant authentication/authorization, immutable
-run creation, outbox dispatch and customer execution are not implemented.
+The executable adapter is the synthetic support agent/state workflow. Customer
+connections, remaining adapters and production security qualification are pending.

@@ -4,11 +4,16 @@
   "private": true,
   "type": "module",
   "description": "Veriqo development control API foundation.",
-  "scripts": { "dev": "tsx watch src/server.ts", "typecheck": "tsc --noEmit" },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@veriqo/contracts": "workspace:*",
     "@veriqo/db": "workspace:*",
     "@temporalio/client": "1.24.0",
-    "fastify": "5.12.7"
+    "fastify": "5.12.7",
+    "jose": "6.2.13",
+    "zod": "4.6.7"
   }
 }

@@ -1,9 +1,11 @@
 import { createPool } from '@veriqo/db';
 import { buildApi } from './app.js';
 import { createDependencyProbe } from './dependencies.js';
+import { authFromEnvironment } from './auth.js';
+import { ProductStore } from '@veriqo/db/product';
 
 const pool = createPool();
-const app = buildApi({ probe: createDependencyProbe(pool), logger: true });
+const app = buildApi({ probe: createDependencyProbe(pool), logger: true, auth: authFromEnvironment(), store: new ProductStore(pool) });
 app.addHook('onClose', async () => { await pool.end(); });
 let stopping = false;
 const stop = async () => {

@@ -1,8 +1,23 @@
 import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
 import { test } from 'node:test';
 import { exampleScenario, type DependencyStatus } from '@veriqo/contracts';
-import { buildApi } from '../src/app.js';
+import { buildApi as buildCoreApi } from '../src/app.js';
+import type { ProductStore } from '@veriqo/db/product';
+import type { AuthGateway } from '../src/auth.js';
 import { buildReferenceApp, type FixtureMode } from '../src/reference-app.js';
+
+// These contract/health tests isolate identity persistence; cryptographic and tenant tests are separate.
+const buildApi = (options: Parameters<typeof buildCoreApi>[0]) => buildCoreApi({ ...options,
+  auth: { mode: 'development', authenticate: async () => ({ kind: 'user', identity: { issuer: 'test', subject: 'test', display_name: 'Test' } }), loginDevelopment: async () => { throw new Error('Unused test route'); } } as AuthGateway,
+  store: { resolveActor: async () => ({ kind: 'user', id: '10000000-0000-4000-8000-000000000001', display_name: 'Test' }) } as unknown as ProductStore,
+});
+
+test('protected routes fail closed when identity services are not configured', async () => {
+  const app = buildCoreApi({ probe: async () => dependencies(true) });
+  try { assert.equal((await app.inject('/v1/system')).statusCode, 503); }
+  finally { await app.close(); }
+});
 
 const dependencies = (healthy: boolean): DependencyStatus[] =>
   (['postgres', 'temporal', 'coordinator', 'fixture'] as const).map((name) => ({
@@ -85,5 +100,23 @@ test('reference application exposes independent correct and seeded-fault state w
       await app.inject({ method: 'DELETE', url: path });
       assert.equal((await app.inject(path + '/state')).statusCode, 404);
     }
+  } finally { await app.close(); }
+});
+
+test('reference writes are idempotent and a cleaned namespace rejects late setup and actions', async () => {
+  const app = buildReferenceApp();
+  const namespace = randomUUID(), path = '/fixtures/' + namespace;
+  try {
+    const setup = () => app.inject({ method: 'POST', url: '/fixtures', payload: { namespace, mode: 'correct' } });
+    assert.equal((await setup()).statusCode, 201); assert.equal((await setup()).statusCode, 200);
+    const invoke = (message: string) => app.inject({ method: 'POST', url: path + '/agent', headers: { 'idempotency-key': 'one-action' }, payload: { message } });
+    assert.equal((await invoke('urgent request')).statusCode, 200);
+    assert.equal((await invoke('urgent request')).statusCode, 200);
+    assert.equal((await invoke('changed input')).statusCode, 409);
+    assert.equal((await app.inject(path + '/state')).json().tickets.length, 1);
+    await app.inject({ method: 'DELETE', url: path });
+    assert.equal((await setup()).statusCode, 409);
+    assert.equal((await invoke('urgent request')).statusCode, 404);
+    assert.equal((await app.inject({ method: 'DELETE', url: path })).statusCode, 204);
   } finally { await app.close(); }
 });

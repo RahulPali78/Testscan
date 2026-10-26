@@ -3,11 +3,24 @@ import { existsSync } from 'node:fs';
 import { once } from 'node:events';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { randomBytes } from 'node:crypto';
+import { createServer } from 'node:net';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 if (existsSync(resolve(root, '.env'))) process.loadEnvFile(resolve(root, '.env'));
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 const delay = (ms) => new Promise((done) => setTimeout(done, ms));
+
+async function requireFreePort(host, value) {
+  const port = Number(value);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid application port.');
+  const listener = createServer();
+  await new Promise((resolve, reject) => {
+    listener.once('error', () => reject(new Error('Application port ' + port + ' is occupied. Stop the existing service before starting this workspace.')));
+    listener.listen(port, host, resolve);
+  });
+  await new Promise((resolve, reject) => listener.close((error) => error ? reject(error) : resolve()));
+}
 
 async function command(binary, args, signal) {
   const child = spawn(binary, args, { cwd: root, stdio: 'inherit', shell: process.platform === 'win32', signal });
@@ -17,6 +30,14 @@ async function command(binary, args, signal) {
 }
 
 export async function startDevelopment({ infra = true, web = true, signal } = {}) {
+  if (process.env.NODE_ENV === 'production') throw new Error('The local development launcher cannot run in production.');
+  process.env.VERIQO_AUTH_MODE ??= 'development';
+  process.env.VERIQO_DEV_AUTH_SECRET ??= randomBytes(48).toString('base64url');
+  process.env.VERIQO_SESSION_SECRET ??= randomBytes(48).toString('base64url');
+  process.env.VERIQO_APP_URL ??= 'http://127.0.0.1:' + (process.env.PORT ?? '3000');
+  await requireFreePort(process.env.API_HOST ?? '127.0.0.1', process.env.API_PORT ?? '4000');
+  await requireFreePort(process.env.FIXTURE_HOST ?? '127.0.0.1', process.env.FIXTURE_PORT ?? '4100');
+  if (web) await requireFreePort('127.0.0.1', process.env.PORT ?? '3000');
   signal?.throwIfAborted();
   if (Number(process.versions.node.split('.')[0]) !== 24) throw new Error('Use the pinned Node.js 24 toolchain.');
   if (infra) {
