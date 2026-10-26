@@ -32,7 +32,7 @@ export function buildApi(options: { probe: DependencyProbe; logger?: boolean }) 
     application_classes: ApplicationKindSchema.options.map((kind) => ({ kind, qualification: 'planned' as const })),
   }));
   app.post('/v1/scenarios/validate', {
-    schema: { body: { type: 'object' } },
+    schema: { body: {} },
   }, async (request, reply) => {
     const result = ScenarioSchema.safeParse(request.body);
     if (!result.success) {

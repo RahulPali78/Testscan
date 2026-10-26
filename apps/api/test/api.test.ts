@@ -33,6 +33,14 @@ test('schema validation crosses the API boundary without accepting invalid execu
     });
     assert.equal(invalid.statusCode, 400);
     assert.equal(invalid.json().valid, false);
+    for (const payload of [null, [], 'not-a-scenario', 42]) {
+      const rejected = await app.inject({
+        method: 'POST', url: '/v1/scenarios/validate',
+        headers: { 'Content-Type': 'application/json' }, payload: JSON.stringify(payload),
+      });
+      assert.equal(rejected.statusCode, 400);
+      assert.equal(rejected.json().valid, false);
+    }
     assert.equal((await app.inject('/v1/capabilities')).json().application_classes.every(
       (value: { qualification: string }) => value.qualification === 'planned',
     ), true);
